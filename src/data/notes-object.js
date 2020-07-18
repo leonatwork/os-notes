@@ -625,4 +625,276 @@ export const notes = [
       </div>
     ),
   },
+  {
+    id: 2,
+    title: "System Calls",
+    content: (
+      <div>
+        <h1>System Calls</h1>
+        <hr />
+        <ul>
+          <li>Provides an interface to the services provided by the OS</li>
+          <li>
+            Application programmer uses API, the API makes system calls on
+            behalf of programmer
+          </li>
+          <li>
+            When a call is made, the user mode is switched to kernel mode, then
+            the address of the implementation of that called function is fetched
+            from a look up table and is executed
+          </li>
+          <li>
+            Methods to pass parameters:
+            <ol>
+              <li>Using registers</li>
+              <li>
+                Via registers storing address to a block or table in memory
+                holding parameters
+              </li>
+              <li>Via stack (parameters are pushed and popped)</li>
+            </ol>
+          </li>
+        </ul>
+        <hr />
+        <h4>Types of system calls</h4>
+        <ol>
+          <li>
+            <b>Process control</b>
+            <ul>
+              <li>Program may end normally or abort abnormally</li>
+              <li>
+                Program needs to loaded into main memory and transferred back
+                once the job is done
+              </li>
+              <li>Creating or terminating processes</li>
+              <li>
+                Wait for other process to release resource, signal waiting
+                processes that resource is now free
+              </li>
+              <li>Set or get process attributes</li>
+              <li>Allocate or free memory</li>
+              <li>
+                For above tasks related to processes, system calls are required
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>File manipulation</b>
+            <ul>
+              <li>create, delete, open, close, update files</li>
+              <li>
+                For above tasks related to files, system calls are required
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Device manipulation</b>
+            <ul>
+              <li>Giving access to resource</li>
+              <li>Handling concurrent access to a resource</li>
+              <li>Deallocating resources once the work is done</li>
+              <li>Request, release, attach, detach device</li>
+              <li>get, set device attribute</li>
+              <li>
+                For above tasks related to devices, system calls are required
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Information maintenance</b>
+            <ul>
+              <li>Transfer info from user program to OS</li>
+              <li>get, set time,date,file,process,device attributes</li>
+              <li>
+                For above tasks related to information, system calls are
+                required
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Communication</b>
+            <ul>
+              <li>
+                2 models for inter process communication
+                <ol>
+                  <li>
+                    Message passing
+                    <ul>
+                      <li>Useful when small amount of data</li>
+                      <li>Easier to implement</li>
+                    </ul>
+                  </li>
+                  <li>
+                    Shared memory
+                    <ul>
+                      <li>Great speed</li>
+                      <li>
+                        Protection and synchronization problem for shared area
+                        access
+                      </li>
+                    </ul>
+                  </li>
+                </ol>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Protection</b>
+            <ul>
+              <li>Mechanism for controlling resources</li>
+              <li>Specially when connected over a network</li>
+            </ul>
+          </li>
+        </ol>
+        <hr />
+        <h4>Dual mode operation</h4>
+        <ul>
+          <li>User mode & kernel/monitor mode</li>
+          <li>Mode bit 0 : task executed on behalf of OS</li>
+          <li>Mode bit 1 : task executed on behalf of user</li>
+          <li>
+            Dual mode protects errant access to privileged locations which may
+            harm the systems integrity.
+          </li>
+          <li>Privileged instruction can only be executed in monitor mode.</li>
+        </ul>
+      </div>
+    ),
+  },
+  {
+    id: 3,
+    title: "Designing OS",
+    content: (
+      <div>
+        <h1>Designing OS</h1>
+        <hr />
+        <ul>
+          <li>No ideal solution exists</li>
+          <li>
+            Depends on requirements (like real time, large scale, scientific)
+          </li>
+          <li>User goals : fast,reliable, easy to use</li>
+          <li>
+            System goal : easy to design,maintain and implement, error free
+          </li>
+          <li>
+            Design goals: convenience, reliable, fast, flexible and efficient
+          </li>
+        </ul>
+        <p>
+          <b>Policy : </b>determines what is to be done
+          <br />
+          <b>Mechanism : </b>determines how it is to be done
+        </p>
+        <p>
+          Earlier OS was mostly implemented in machine language (adv. less
+          storage and fast OS). But now we use high level languages like C/C++
+          (adv. fast to develop but slow OS and inc. storage)
+        </p>
+        <hr />
+        <h4>Structures of design</h4>
+        <ol>
+          <li>
+            <b>Simple</b>
+            <ul>
+              <li>MS-DOS, UNIX initially</li>
+            </ul>
+          </li>
+          <li>
+            <b>Layered (modularity)</b>
+            <ul>
+              <li>n layers from hardware to the UI</li>
+            </ul>
+          </li>
+          <li>
+            <b>Microkernel</b>
+            <ul>
+              <li>
+                Unnecessary features are removed from kernel and made into
+                system and user programs
+              </li>
+              <li>Smaller kernel size</li>
+              <li>Ease of extending OS services by adding to user programs</li>
+            </ul>
+          </li>
+          <li>
+            <b>Modules</b>
+            <ul>
+              <li>Kernel modules implemented</li>
+              <li>OO approach</li>
+              <li>
+                Each core component is separate and talks with others using
+                interfaces
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Virtual machine</b>
+            <ul>
+              <li>
+                VM is an isolated computing environment created by abstracting
+                resources from a physical machine.
+              </li>
+              <li>
+                Creates illusion of multiple processors but resources are
+                actually shared.
+              </li>
+              <li>
+                <b>Normal structure</b>
+                <table
+                  className="table table-sm table-bordered"
+                  style={{ textAlign: "center", width: "150px" }}
+                >
+                  <tbody>
+                    <tr>
+                      <td>Processes</td>
+                    </tr>
+                    <tr>
+                      <td>Kernel</td>
+                    </tr>
+                    <tr>
+                      <td>Hardware</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </li>
+              <li>
+                <b>VM structure</b>
+                <table
+                  className="table table-sm table-bordered"
+                  style={{ textAlign: "center", width: "260px" }}
+                >
+                  <tbody>
+                    <tr>
+                      <td>Processes</td>
+                      <td>Processes</td>
+                      <td>Processes</td>
+                    </tr>
+                    <tr>
+                      <td>Kernel</td>
+                      <td>Kernel</td>
+                      <td>Kernel</td>
+                    </tr>
+                    <tr>
+                      <td>VM 1</td>
+                      <td>VM 2</td>
+                      <td>VM 3</td>
+                    </tr>
+                    <tr>
+                      <td colSpan="3">VM implementation</td>
+                    </tr>
+                    <tr>
+                      <td>Hardware</td>
+                      <td>Hardware</td>
+                      <td>Hardware</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+    ),
+  },
 ];
