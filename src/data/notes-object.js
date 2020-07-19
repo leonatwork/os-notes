@@ -903,7 +903,580 @@ export const notes = [
     content: (
       <div>
         <h1>Process Management</h1>
-        <hr />{" "}
+        <hr />
+        <b>Program : </b>passive entity
+        <br />
+        <b>Process : </b>active entity
+        <br />
+        <br />
+        Single threaded process has one program counter.
+        <br />
+        Multi threaded process has one program counter per thread.
+        <br />
+        Processes run concurrently by multiplexing the CPU
+        <br />
+        <br />
+        <b>OS is responsible for :</b>
+        <ul>
+          <li>Process scheduling</li>
+          <li>Process creation and termination</li>
+          <li>Suspending and resuming</li>
+          <li>IPC</li>
+          <li>Process synchronization</li>
+          <li>Deadlock prevention</li>
+        </ul>
+        Process is the unit of work in most systems
+        <br />
+        <br />
+        <b>Threads</b>
+        <ul>
+          <li>They are lightweight processes</li>
+          <li>
+            Each thread of a process has its own resources but they share some
+            resources also.
+          </li>
+        </ul>
+        A process include
+        <ul>
+          <li>Program counter</li>
+          <li>Stack</li>
+          <li>Data section</li>
+        </ul>
+        <b>Process states</b>
+        <ul>
+          <li>New</li>
+          <li>Running</li>
+          <li>Waiting</li>
+          <li>Ready</li>
+          <li>Terminated</li>
+        </ul>
+        Scheduler Dispatch moves process from ready to running state
+        <hr />
+        <h4>Process Control Block (PCB)</h4>
+        PCB contains Information about
+        <ul>
+          <li>Process state</li>
+          <li>Program counter</li>
+          <li>CPU registers</li>
+        </ul>
+        <table
+          className="table table-sm table-bordered"
+          style={{ textAlign: "center", width: "150px" }}
+        >
+          <tbody>
+            <tr>
+              <td>Process State</td>
+            </tr>
+            <tr>
+              <td>Process Number</td>
+            </tr>
+            <tr>
+              <td>Program Counter</td>
+            </tr>
+            <tr>
+              <td>Register</td>
+            </tr>
+            <tr>
+              <td>Memory limits</td>
+            </tr>
+            <tr>
+              <td>List of open files</td>
+            </tr>
+            <tr>
+              <td>etc ...</td>
+            </tr>
+          </tbody>
+        </table>
+        A process migrated between various queues
+        <br />
+        <br />
+        <b>Scheduling queues</b>
+        <ul>
+          <li>
+            <b>Job queue :</b> as process enters a system they are put here
+            <b>Ready queue :</b> processes in memory waiting for execution A
+            ready queue header contains pointers to the first and last PCBs in
+            the list, each PCBs of the list has a pointer to the next PCB
+            <b>Device queue :</b> List of processes waiting for an I/O device
+          </li>
+        </ul>
+        A process in execution can make
+        <ul>
+          <li>I/O request and would be out into the device queue</li>
+          <li>A sub-process and wait for its termination</li>
+          <li>Interrupted and go back to the ready queue</li>
+        </ul>
+        <b>Scheduler</b>
+        <ul>
+          <li>
+            <b>Long term scheduler / Job scheduler</b>
+            <ul>
+              <li>
+                Selects processes from pool (disk, secondary memory) and brings
+                it into the main memory for execution
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Short term scheduler / CPU scheduler</b>
+            <ul>
+              <li>
+                Selects a process among set of ready to execute processes and
+                allocate CPU to it The main difference is in frequency of
+                execution. (short-term = more frequent)
+              </li>
+            </ul>
+          </li>
+        </ul>
+        Degree of multiprogramming (number of processes in main memory) It is
+        controlled by long term scheduler
+        <br />
+        <br />
+        <b>I/O bound processes :</b> spends more time on I/O
+        <br />
+        <b>CPU bound processes :</b> spends more time on doing computation
+        <br />
+        Long term scheduler should select processes having good mix of these two
+        <br />
+        <br />
+        <b>Context switch</b>
+        <ul>
+          <li>
+            Saving the state of the old process and switching to another process
+          </li>
+          <li>Context of process is represented by its PCB</li>
+        </ul>
+        <b>UNIX</b>
+        <ul>
+          <li>
+            <b>fork :</b> system call creates a new process
+            <b>exec :</b> system call used after a fork to replace the process'
+            memory space with a new program
+          </li>
+        </ul>
+        Independent process (unaffected by others) vs Cooperative process
+        (affected by others)
+        <hr />
+        <h4>Inter Process Communication (IPC)</h4>
+        <b>Message passing</b>
+        <ul>
+          <li>
+            ProcA -{">"} Kernel -{">"} ProcB
+          </li>
+          <li>Passing msgs without having a shared data</li>
+          <li>Messages can be fixed or variable size</li>
+          <li>Send() and receive() primitives should be provided</li>
+          <li>Communication link should be established</li>
+          <b>Direct</b>
+          <ul>
+            <li>sender -{">"} receiver</li>
+            <li>Sender should explicitly mention receiver's address</li>
+            <li>A link exist between each pair</li>
+          </ul>
+          <b>Indirect</b>
+          <ul>
+            <li>
+              sender -{">"} mailbox (ports) -{">"} receiver
+            </li>
+            <li>Multiple links can be present</li>
+          </ul>
+          <br />
+          <b>Symmetric</b>
+          <ul>
+            <li>
+              Both sender and receiver should name the other to communicate
+            </li>
+          </ul>
+          <b>Asymmetric</b>
+          <ul>
+            <li>Only sender needs to name the receiver to communicate</li>
+          </ul>
+          <br />
+          <b>Mailbox owned by a process</b>
+          <ul>
+            <li>The owner of the mailbox can only receive</li>
+            <li>Mailbox disappears when process terminates</li>
+          </ul>
+          <b>Mailbox owned by OS</b>
+          <ul>
+            <li>Can use the mailbox for both sending and receiving</li>
+            <li>
+              OS allows processes to create, delete, send and receive messages
+              via mailbox
+            </li>
+          </ul>
+          <b>Synchronization</b>
+          <ul>
+            <li>
+              <b>Blocking (sync.)</b>
+              <ul>
+                <li>Blocking send : sender blocked until msg is received</li>
+                <li>
+                  Blocking receive : receiver blocked until msg is available
+                </li>
+              </ul>
+            </li>
+            <li>
+              <b>Non-blocking (async.)</b>
+              <ul>
+                <li>Non-blocking send : sender sends and continue</li>
+                <li>
+                  Non-blocking receive : receiver receives valid msg or null
+                </li>
+              </ul>
+            </li>
+          </ul>
+          Rendezvous = when both send and receive are blocking
+          <br />
+          <br />
+          <b>Buffering : </b>messages exchanged reside on a temporary queue.
+          <ul>
+            <li>
+              zero capacity : link cant have any msg waiting in it sender
+              blocked until receiver receives
+            </li>
+            <li>
+              bounded capacity : sender blocked if full, otherwise keep on
+              sending
+            </li>
+            <li>
+              unbounded capacity : any no. of msgs can wait in queue, sender
+              never blocked
+            </li>
+          </ul>
+        </ul>
+        <b>Shared memory</b>
+        <ul>
+          <li>
+            ProcA -{">"} shared memory -{">"} ProcB
+          </li>
+          <li>Have a common buffer pool</li>
+          <li>
+            Eg. Producer consumer problem (unbounded buffer, bounded buffer)
+          </li>
+        </ul>
+        <b>Communication in client server system</b>
+        <ol>
+          <li>
+            <b>Socket</b>
+            <ul>
+              <li>Socket is an endpoint of communication</li>
+              <li>Sockets are identified by IP address + port number</li>
+              <li>
+                Sever implement specific services (telnet, ftp, http) and
+                listens to well known ports below 1024
+              </li>
+              <li>
+                Client is assigned a port number by the host computer {">"} 1024
+              </li>
+              <li>Sockets are considered low level</li>
+              <li>RPC and RMI are higher level</li>
+            </ul>
+          </li>
+          <li>
+            <b>RPC</b>
+            <ul>
+              <li>
+                Msgs are well structured, contains id of function to be executed
+                and its parameters
+              </li>
+              <li>
+                RPC daemon(process that always runs in the background) listens
+                to a port on remote system
+              </li>
+              <li>Msgs are addressed to RPC daemon</li>
+              <li>
+                Function is executed and reply is sent back in another message
+              </li>
+              <li>
+                RPC provides stub (client side proxy for actual procedure to
+                hide the details of communication)
+              </li>
+              <li>
+                Stub locates the correct port on the server and marshalls the
+                parameters in the correct format for transmission over network
+              </li>
+              <li>
+                Similar stub on server side which unpacks the msg and invokes
+                the procedure and returns values
+              </li>
+              <li>
+                RPC can represent data in machine independent way using XDR
+                (External Data Representation) Marshalling converts data from
+                machine dependent to XDR and vice-versa
+              </li>
+              <li>
+                <b>Binding client and server</b>
+                <ul>
+                  <li>
+                    The port numbers can be fixed and therefore predetermined
+                  </li>
+                  <li>
+                    Binding can also be done dynamically by matchmaker daemon
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <b>Steps</b>
+                <ol>
+                  <li>User calls kernel to send RPC msg</li>
+                  <li>Kernel contacts matchmaker to find port number</li>
+                  <li>Matchmaker replies to client with port number</li>
+                  <li>Kernel sends RPC to the correct port</li>
+                  <li>
+                    Daemon listening to port for requests and then calls
+                    specific procedure and return result
+                  </li>
+                  <li>Kernel receives it and sends back to user</li>
+                </ol>
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>RMI</b>
+          </li>
+        </ol>
+        <b>Pipes : </b>it allows two processes to communicate.
+        <ul>
+          <li>
+            <b>Ordinary pipe (named anonymous pipes on windows)</b>
+            <ul>
+              <li>
+                Allows communication only between parent and child process
+              </li>
+              <li>They are unidirectional</li>
+              <li>
+                Eg producer-consumer : producer writes to pipe, consumer reads
+                from the pipe
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Named pipe</b>
+            <ul>
+              <li>More powerful than ordinary pipes</li>
+              <li>Allows communication between unrelated processes</li>
+              <li>Bidirectional / no parent-child relationship</li>
+            </ul>
+          </li>
+        </ul>
+        <hr />
+        <h4>Multi threaded programming</h4>
+        <b>Thread :</b> fundamental unit of CPU utilization in multi-threaded
+        programming
+        <ul>
+          <li>It is flow of control within a process</li>
+          <li>
+            Multi-threaded process contains several different flows of control
+            within the same address space
+          </li>
+          <li>Lightweight process</li>
+          <li>
+            A thread has its own ID, program counter, register set and stack
+          </li>
+          <li>
+            It shares code section, data section and other OS resources with
+            threads of the same process
+          </li>
+          <li>
+            If a process has multiple threads the it can perform more than one
+            task at a time
+          </li>
+          <li>
+            Each thread runs on separate CPU, increasing concurrency and
+            parallelism
+          </li>
+        </ul>
+        <table
+          className="table table-sm table-bordered"
+          style={{ textAlign: "center", width: "150px" }}
+        >
+          <tbody>
+            <tr>
+              <td>T1</td>
+              <td>T2</td>
+              <td>T3</td>
+            </tr>
+            <tr>
+              <td>Registers</td>
+              <td>Registers</td>
+              <td>Registers</td>
+            </tr>
+            <tr>
+              <td>Stack</td>
+              <td>Stack</td>
+              <td>Stack</td>
+            </tr>
+            <tr>
+              <td colSpan="3">code & data & files</td>
+            </tr>
+          </tbody>
+        </table>
+        <b>2 types of threads</b>
+        <ol>
+          <li>
+            <b>User level threads</b>
+            <ul>
+              <li>Visible to a programmer but not to kernel</li>
+              <li>Implemented by thread library/API</li>
+              <li>Faster to create and manage as kernel doesn;t intervene</li>
+              <li>
+                Disadv: if the kernel is single threaded then any user level
+                thread performing a blocking system call will block the entire
+                process
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Kernel level threads</b>
+            <ul>
+              <li>OS kernel supports and manages it</li>
+              <li>Slower to create and manage</li>
+              <li>
+                If kernel thread performs a blocking system call then it can
+                schedule another thread on different core/processor
+              </li>
+            </ul>
+          </li>
+        </ol>
+        <p>
+          Multi threading is more efficient than multi processes
+          <br />
+          RPC generally multi-threaded
+          <br />
+          Whenever a new request comes it creates a new thread to serve it and
+          again listens for other requests
+        </p>
+        <b>Benefits of Multi-threading</b>
+        <ul>
+          <li>Responsiveness</li>
+          <li>Resource sharing</li>
+          <li>Economy (resource sharing among processes is costly)</li>
+          <li>Scalability</li>
+        </ul>
+        <b>Thread models</b>
+        <ul>
+          <li>
+            <b>Many to one</b>
+            <ul>
+              <li>Many user level threads mapped to one kernel thread</li>
+              <li>Thread management is done in user space so efficient</li>
+              <li>Entire process blocks if thread makes a blocking call</li>
+              <li>Multiple threads can't run in parallel on multiprocessors</li>
+            </ul>
+          </li>
+          <li>
+            <b>One to one</b>
+            <ul>
+              <li>Each user thread is mapped to one kernel thread</li>
+              <li>
+                More concurrency as other threads can run even if one thread
+                makes a blocking call
+              </li>
+              <li>Threads can run in parallel on multiple processors</li>
+              <li>
+                Each new user level thread needs a corresponding kernel level
+                thread (overhead, performance loss)
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Many to many</b>
+            <ul>
+              <li>
+                Many user level threads are multiplexed to a smaller/equal
+                number of threads
+              </li>
+              <li>Can run in parallel</li>
+              <li>
+                Then a thread performs a blocking call, the kernel can schedule
+                another thread for execution
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <b>Thread Cancellation :</b> task of terminating a thread(target thread)
+        <ul>
+          <li>
+            <b>Asynchronous cancellation</b>
+            <ul>
+              <li>One thread terminates target thread</li>
+              <li>Target thread may not free the acquired resources</li>
+            </ul>
+          </li>
+          <li>
+            <b>Deferred cancellation</b>
+            <ul>
+              <li>
+                Target thread can periodically check if it should terminate
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <b>Signal handling : </b> notifying a process/thread that some event has
+        occurred
+        <ul>
+          <li>
+            <b>Synchronous signal</b>
+            <ul>
+              <li>
+                Signal sent to same process/thread that caused signal generation
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Asynchronous signal</b>
+            <ul>
+              <li>
+                Signal generated by an event external to a running process
+              </li>
+            </ul>
+          </li>
+          Every signal must be handled
+          <ul>
+            <li>User defined signal handler</li>
+            <li>Default signal handler (run by kernel)</li>
+          </ul>
+        </ul>
+        <b>Thread pools</b>
+        <ul>
+          <li>
+            Create a number of threads at startup and place them in a pool where
+            they wait for work
+          </li>
+          <li>
+            When server receives a request it awakens a thread and assigns work
+            to it
+          </li>
+          <li>On completion thread returns back to the pool</li>
+          <li>
+            Benefits:
+            <ul>
+              <li>
+                Faster to respond to a request as no need of new thread creation
+              </li>
+              <li>
+                Thread pool limits the number of threads that can exist...no
+                infinite growth
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <b>Scheduler activation</b>
+        <ul>
+          <li>
+            There needs to be communication between user and kernel level
+            threads so that appropriate number of kernel level threads are
+            allocated to the application.
+          </li>
+          <li>
+            Scheduler activation provides upcalls - a communication mechanism
+            from kernel to thread library.
+          </li>
+          <li>
+            Required to maintain the correct number of kernel level threads.
+          </li>
+        </ul>
       </div>
     ),
   },
@@ -923,7 +1496,295 @@ export const notes = [
     content: (
       <div>
         <h1>Deadlocks</h1>
-        <hr />{" "}
+        <hr />
+        <p>
+          A deadlocked state occurs when two or more process are waiting
+          indefinitely for an event that can be caused only by one of the
+          waiting processes.
+        </p>
+        <b>Necessary conditions</b> (deadlock situation can occur if all these
+        situation hold simultaneously)
+        <ol>
+          <li>
+            <b>Mutual exclusion</b>
+            <ul>
+              <li>
+                At least one resource should be held in non-sharable mode (i.e
+                can be used by only one at a time)
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Hold and wait</b>
+            <ul>
+              <li>
+                A process must hold at least one resource and be waiting for
+                another resource held by another process
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>No pre-emption</b>
+            <ul>
+              <li>A resource can only be released voluntarily by a process</li>
+            </ul>
+          </li>
+          <li>
+            <b>Circular wait</b>
+            <ul>
+              <li>
+                In a set of waiting processes, all are waiting for a resource
+                held by another process in the set (in a circular fashion)
+              </li>
+            </ul>
+          </li>
+          All 4 conditions must hold for a deadlock to occur
+        </ol>
+        <b>Resource allocation graph</b>
+        <ul>
+          <li>
+            Vertices - Pi processes (bubble) and Rj resources (square with dots
+            denoting no. of instances)
+          </li>
+          <li>Request edge Pi-{">"}Rj</li>
+          <li>Assignment edge Ri-{">"}Pj</li>
+          <li>If it contains no cycle then no deadlock</li>
+          <li>
+            If it contains cycle then deadlock may or may not be in deadlock
+            <ul>
+              <li>If only one instance per resource type then deadlock</li>
+              <li>
+                If several instances per resource type then possibility of
+                deadlock
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <b>3 ways of dealing with deadlock</b>
+        <ol>
+          <li>Use protocols to avoid or prevent deadlock</li>
+          <li>
+            Allow system to enter deadlock then state, detect it and recover
+          </li>
+          <li>Ignore the problem and pretend that it will never occur</li>
+        </ol>
+        <b>Deadlock handling methods</b>
+        <ul>
+          <li>Prevention</li>
+          <li>Avoidance</li>
+          <li>Detection and recovery</li>
+          <li>Ignorance / ostrich algo</li>
+        </ul>
+        <b>Good approaches</b>
+        <ul>
+          <li>
+            <b>Deadlock prevention : </b>make sure at least one of the 4
+            conditions cannot hold
+          </li>
+          <li>
+            <b>Deadlock avoidance : </b>information about processes and the
+            resources it requires will be given to OS in advance and OS will
+            make smart decisions
+          </li>
+        </ul>
+        <hr />
+        <h4>Deadlock prevention</h4>
+        <b>Mutual exclusion</b>
+        <ul>
+          <li>
+            Only for non-sharable resources and we cannot resolve mutual
+            exclusion in such case
+          </li>
+          <li>Sharable resources have no issue</li>
+        </ul>
+        <b>Hold and Wait</b>
+        <ul>
+          <li>
+            <b>Do not hold :</b> Process requesting a resource may not hold any
+            resource, before requesting something it would release all held
+            resources. efficient
+          </li>
+          <li>
+            <b>Conservative approach :</b> Process can only request resources at
+            the start of execution and not in the middle. So all resources
+            required should be allocated at the start itself. less efficient
+          </li>
+          <li>
+            <b>Wait timeout :</b> a process can wait only for a certain time
+            period. after which a process must release all resources
+            <ul>
+              <li>
+                Resource utilization will be low as it will remain unutilized
+                for long periods
+              </li>
+              <li>
+                Starvation possible, a process needing several resources may
+                have to wait long
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <b>No preemption</b>
+        <ul>
+          <li>Forcefull preemption</li>
+          <li>
+            <b>Sol1:</b> if a process holds some resources and requests another
+            resource that can't be immediately allocated to it, then all
+            resources currently held by it are implicitly released. The process
+            is restarted only when all required resources are available.
+          </li>
+          <li>
+            <b>Sol2:</b> If requested resource is not available, then check its
+            status whether it is held by another process which is waiting. If
+            this is the case, preempt the resources and give it to the
+            requestor.
+          </li>
+        </ul>
+        <b>Circular wait</b>
+        <ul>
+          <li>
+            Impose ordering of all resource types and require that each process
+            request resources in increasing or decreasing order (any one).
+          </li>
+          <li>
+            Require that whenever a process requests an instance of resource
+            type, it has released resources with lower number.
+          </li>
+        </ul>
+        <b>Safe state</b>
+        <ul>
+          <li>
+            A state is safe if a system can allocate resources to each process
+            in some order and still avoid deadlock
+          </li>
+          <li>
+            Safe sequence : if requested resource is free or requested resource
+            by P<sub>i</sub> is held by process P<sub>j</sub> where j{"<"}i.
+            When lower process frees then the higher processes can continue
+          </li>
+        </ul>
+        <b>Resource allocation graph algorithm</b>
+        <ul>
+          <li>
+            Claim edge : dotted edge P<sub>i</sub>-{">"}R<sub>j</sub>{" "}
+            representing P<sub>i</sub> may request R<sub>j</sub>
+          </li>
+          <li>Request edge : when process requests a resource</li>
+          <li>Assignment edge : when a resource is allocated to a process</li>
+          <li>Resources must be claimed a priori in the system</li>
+          <li>
+            Request can only be granted if converting a request edge to
+            assignment edge does not result in the formation of a cycle in the
+            resource allocation graph.
+          </li>
+        </ul>
+        <b>Bankers algorithm (for deadlock avoidance)</b>
+        <ul>
+          <li>
+            First use bankers safety algorithm to check whether the system is in
+            safe state
+          </li>
+          <li>
+            Then use the resource request algorithm to check whether each of the
+            given requests may be safely granted or not.
+          </li>
+          <li>
+            Each process has
+            <ul>
+              <li>Allocation vector : no. of each resource type allocated</li>
+              <li>
+                Max vector : the maximum number of each resource to be used
+              </li>
+              <li>Need vector : outstanding resources (max - allocation)</li>
+            </ul>
+          </li>
+          <li>Available/work vector : free resources over all processes</li>
+          <li>
+            Maximum resource vector : allocation vectors + available vector
+          </li>
+          <li>Finish vector : indicates which processes are still running</li>
+          <li>
+            Disadvantages
+            <ul>
+              <li>It requires fixed number of resources to allocate</li>
+              <li>Resources may breakdown suddenly</li>
+              <li>Process rarely know their max resource needs in advance</li>
+              <li>
+                It requires a fixed number of processes but in real life it may
+                vary dynamically
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <hr />
+        <h4>Deadlock detection</h4>
+        <ul>
+          <li>
+            Determines if deadlock has occurred. If occured the run recovery
+            algorithm
+          </li>
+          <li>
+            <b>Adv :</b> process needs not to be known in advance
+          </li>
+          <li>
+            <b>Disadv :</b> detection and recovery schemes require overhead and
+            some losses occur while recovering from deadlock
+          </li>
+        </ul>
+        If single instance of each resource type
+        <ul>
+          <li>
+            We maintain a wait-for graph
+            <ul>
+              <li>Nodes are processes</li>
+              <li>
+                P<sub>i</sub>-{">"}P<sub>j</sub> (P<sub>i</sub> is waiting for P
+                <sub>j</sub>)
+              </li>
+              <li>Cycle in wait-for graph represents deadlock</li>
+            </ul>
+          </li>
+        </ul>
+        If several instances of a resource type
+        <ul>
+          <li>Wait-for graph not applicable</li>
+          <li>
+            Here we use deadlock detection algorithm with specific data
+            structure
+            <ul>
+              <li>
+                Available : vector of length m indicating no. of resources of
+                each type
+              </li>
+              <li>
+                Allocation : an n x m matrix denoting no. of resources allocated
+                to each process
+              </li>
+              <li>
+                Request : an n x m matrix indicated the current request of each
+                process Request[i][j]=k -{">"} P<sub>i</sub> requests K
+                instances of resource R<sub>j</sub>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        Issue is when to call and at what frequency to call the detection
+        algorithm Recovery from deadlock.
+        <br />
+        Once detected
+        <ul>
+          <li>System admin can terminate</li>
+          <li>Automatic termination</li>
+        </ul>
+        <b>Resource preemption</b>
+        <ul>
+          <li>Selecting victim (whom to abort)</li>
+          <li>Rollback (go back to safe state and start again)</li>
+          <li>
+            Starvation (same process is selected as victim for a long time, so
+            it must be picked a small no. of times)
+          </li>
+        </ul>
       </div>
     ),
   },
