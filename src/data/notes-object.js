@@ -1486,7 +1486,435 @@ export const notes = [
     content: (
       <div>
         <h1>Process Synchronization</h1>
-        <hr />{" "}
+        <hr />
+        <b>Cooperating process</b>
+        <ul>
+          <li>One that can affect or can be affected by other processes.</li>
+          <li>
+            They may share logical address space (i.e. code and data), or share
+            data through files or messages through threads.
+          </li>
+          <li>
+            Concurrent access to shared data can result in inconsistencies.
+          </li>
+          <li>
+            There has to be orderly execution of cooperating processes to ensure
+            consistency.
+          </li>
+        </ul>
+        <b>Race condition : </b>when the outcome of the execution depends on the
+        order in which data access takes place.
+        <br />
+        <br />
+        <b>Critical section</b>
+        <ul>
+          <li>
+            A segment of code in which a process maybe changing common
+            variables, updating a table or writing a file etc.
+          </li>
+          <li>A section where we access the shared resource.</li>
+          <li>
+            Entry section : Request permission to enter the critical section
+          </li>
+          <li>
+            Critical section : Mutually exclusive in time (no other process can
+            execute in its critical section)
+          </li>
+          <li>Exit section : Follows the critical section</li>
+          <li>Remainder section</li>
+        </ul>
+        <b>Solution to critical section problem must satisfy :</b>
+        <ol>
+          <li>
+            <b>Mutual exclusion :</b> (mandatory)
+            <ul>
+              <li>Only one process can be in critical section.</li>
+            </ul>
+          </li>
+          <li>
+            <b>Progress :</b> (mandatory)
+            <ul>
+              <li>
+                Only those processes which are not in the remainder section can
+                enter the critical section and the selection of the process
+                cannot be postponed indefinitely
+              </li>
+              <li>
+                Only those processes interested in entering into the critical
+                section should compete for it.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Bounded waiting : </b>(optional)
+            <ul>
+              <li>
+                There must be a bound on the number of times other processes are
+                allowed to enter into the critical section after a process has
+                made a request to enter in the critical section and before the
+                request is granted.
+              </li>
+            </ul>
+          </li>
+        </ol>
+        <b>Software solution</b>
+        <ul>
+          <li>
+            <b>Using 2 turn variables</b>
+            <ul>
+              <li>Satisfies mutual exclusion</li>
+              <li>
+                Does NOT satisfy progress hence faulty (because of strict
+                aternations even if process doesn't want to enter CS)
+              </li>
+            </ul>
+          </li>
+
+          <li>
+            <b>Using flag variable - flag[2]</b>
+            <ul>
+              <li>Satisfies mutual exclusion</li>
+              <li>
+                Satisfies progress (no strict alternation and interest of a
+                process is considered)
+              </li>
+              <li>
+                But deadlock possible if context switch happens in entry section
+                and flag become [T,T]
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Peterson's solution</b>
+            <ul>
+              <li>Uses both flag and turn variable</li>
+              <li>
+                Satisfies all 3 conditions (mutual exclusion, progress and
+                bounded wait)
+              </li>
+              <li>
+                Difficult to scale up to n-processes (solution is semaphores)
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <b>Peterson's solution</b>
+        <ul>
+          <li>Software solution that can be used to prevent race condition</li>
+          <li>Two process solution</li>
+          <li>
+            Assumes that LOAD and STORE instructions are atomic and cannot be
+            interrupted
+          </li>
+          <li>
+            The 2 processes share two variables
+            <ol>
+              <li>
+                int turn
+                <ul>
+                  <li>
+                    Turn indicates whose turn it is to enter the critical
+                    section
+                  </li>
+                </ul>
+              </li>
+              <li>
+                boolean flag[2]
+                <ul>
+                  <li>
+                    Flag array is used to indicate if a process is ready to
+                    enter into the critical section
+                  </li>
+                  <li>
+                    flag[i]=true implies process P<sub>i</sub> is ready
+                  </li>
+                </ul>
+              </li>
+            </ol>
+          </li>
+        </ul>
+        <b>Hardware solutions</b>
+        <ul>
+          <li>
+            <b>Locks</b>
+            <ul>
+              <li>Acquiring and releasing locks</li>
+              <li>
+                Atomic instruction running on different CPUs will run
+                sequentially
+              </li>
+              <li>
+                <b>Semaphores</b>
+                <ul>
+                  <li>
+                    A synchronization tool used to control access to shared
+                    variables so that only one process at any point of time
+                    change the value of the shared variable.
+                  </li>
+                  <li>
+                    A semaphore S is an integer variable that is accessed only
+                    through two standard atomic operations wait and signal.
+                    <br />
+                    <br />
+                    wait(s){" {"}
+                    <br />
+                    while(s{"<"}=0);
+                    <br /> s--;
+                    <br />
+                    {"}"}
+                    <br />
+                    <br />
+                    signal(s){" {"}
+                    <br />
+                    s++;
+                    <br />
+                    {"}"}
+                  </li>
+                  Two types
+                  <ul>
+                    <li>
+                      <b>Counting :</b> allows n processes to access the shared
+                      resource by initializing semaphore to n n processes share
+                      the semaphore(aka mutex) initialised to 1.
+                    </li>
+                    <li>
+                      <b>Binary :</b> semaphore value only 0 or 1.
+                    </li>
+                  </ul>
+                  <b>Mutual exclusion solution</b>
+                  <p>
+                    do{" {"}
+                    <br />
+                    wait(mutex);
+                    <br />
+                    critical section
+                    <br />
+                    signal(mutex);
+                    <br />
+                    {"}"} while(true);
+                  </p>
+                  <b>Disadvantage</b>
+                  <ul>
+                    <li>
+                      They all require busy waiting (process trying to enter
+                      critical section must loop continuously in the entry code)
+                    </li>
+                    <li>This wastes CPU cycle</li>
+                    <li>
+                      This type of semaphore is also called spinlock(because
+                      process spins while waiting for lock)
+                    </li>
+                  </ul>
+                  <b>Advantage</b>
+                  <ul>
+                    <li>
+                      No context switch is required when a process waits for a
+                      lock (useful for short period)
+                    </li>
+                  </ul>
+                </ul>
+              </li>
+              <li>
+                Implementing a semaphore with waiting queue can cause deadlock
+                issue
+              </li>
+              <li>
+                <b>Deadlock : </b>caused when a process in the waiting set is
+                waiting for an event/resource held by another process in the
+                waiting set in circular manner
+              </li>
+              <li>
+                <b>Starvation : </b>when a process waits indefinitely within the
+                semaphore
+              </li>
+              <li>
+                <b>Priority Inversion : </b>when a high priority process needs
+                data currently being accessed by lower priority process
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <b>Classic problems of synchronization</b>
+        <ol>
+          <li>
+            <b>Bounded buffer problem</b>
+            <ul>
+              <li>
+                There is a pool of n buffers each capable of holding one item
+              </li>
+              <li>
+                Empty and full semaphores count the number of empty and full
+                buffers
+              </li>
+              <li>
+                Mutex semaphore provide mutual exclusion for access to the
+                buffer pool
+              </li>
+            </ul>
+          </li>
+          <li>
+            <b>Readers-writers problem</b>
+            <ul>
+              <li>Data is shared among number of concurrent processes</li>
+              <li>Readers only read the data and do not update</li>
+              <li>Writers can both read and write</li>
+              <li>Many readers can access at the same time</li>
+              <li>Writers need exclusive use to shared objects</li>
+              <li>Both reader and writer starvation possible</li>
+            </ul>
+          </li>
+          <li>
+            <b>Dining-philosopher problem</b>
+            <ul>
+              <li>5 philosopher and 5 chopsticks</li>
+              <li>Philosopher wither eats or thinks</li>
+              <li>Semaphore chopstick[5];</li>
+              <li>
+                He acquires a chopstick by wait operation and releases it by
+                signal operation
+              </li>
+              <li>No two neighbours can eat together</li>
+              <li>Deadlock possible</li>
+              <li>
+                Sol: only pick if both are available or odd one will pick left
+                chopstick first and even one will pick right chopstick first
+              </li>
+              <li>Starvation still possible</li>
+            </ul>
+          </li>
+          Monitors is the solution for this problem
+        </ol>
+        <b>Monitors</b>
+        <ul>
+          <li>
+            It is a high level abstraction that provides a convenient and
+            effective mechanism for process synchronization
+          </li>
+          <li>Only one process may be active within a monitor at a time</li>
+          <li>
+            Monitors are needed because if all processes use semaphore and one
+            process accidentally forgets to signal then all will be deadlocked
+          </li>
+          <li>
+            Monitor is a collection of procedures, variables, and data
+            structures that are grouped together in a module/package
+          </li>
+        </ul>
+        <b>Atomicity : </b>either full operation takes place or none.
+        <br />
+        <b>Transaction :</b> set of operations which is successful ends with
+        commit or if failed ends with abort.
+        <br />
+        <b>Serializability :</b> when transactions are executed serially and
+        atomically.
+        <br />
+        <br />
+        Schedule - S1
+        <table
+          className="table table-sm table-bordered"
+          style={{ textAlign: "center", width: "150px" }}
+        >
+          <tbody>
+            <tr>
+              <td>T1</td>
+              <td>T2</td>
+            </tr>
+            <tr>
+              <td>read()</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>write()</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+
+              <td>write()</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>read()</td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <b>Non-serial schedule:</b> transactions can overlap
+          <br />
+          Conflict if in two overlapping operations on same data item and one is
+          write() operation.
+        </p>
+        Schedule - S2
+        <table
+          className="table table-sm table-bordered"
+          style={{ textAlign: "center", width: "150px" }}
+        >
+          <tbody>
+            <tr>
+              <td>T1</td>
+              <td>T2</td>
+            </tr>
+            <tr>
+              <td>read()</td>
+              <td></td>
+            </tr>
+            <tr>
+              <td>write(A)</td>
+              <td>read(A)</td>
+            </tr>
+            <tr>
+              <td>write(A)</td>
+              <td>read(B)</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>write()</td>
+            </tr>
+            <tr>
+              <td></td>
+              <td>read()</td>
+            </tr>
+          </tbody>
+        </table>
+        If O<sub>i</sub> and O<sub>j</sub> are consecutive operations of
+        different transactions (S) and do not conflict then their order can be
+        swapped (S') without any issue.
+        <br />
+        <br />S becomes S' via swapping non-conflicting operations and both are
+        equivalent then S is conflict serializable.
+        <br />
+        <br />
+        <b>Log based recovery</b>
+        <ul>
+          <li>
+            <b>Write ahead log</b>
+            <br />
+            each log records describe a single operation of a transaction write
+            and has these fields:
+            <ol>
+              <li>Transaction name</li>
+              <li>Data item name (data being written)</li>
+              <li>Old value</li>
+              <li>New value</li>
+            </ol>
+            <b>Disadvantage</b>
+            <ul>
+              <li>For each write operation a write on log is also required.</li>
+            </ul>
+            <b>Recovery procedure</b>
+            <ul>
+              <li>undo - restore old values</li>
+              <li>redo - set data to new values</li>
+            </ul>
+          </li>
+        </ul>
+        <b>Checkpoints</b>
+        <ul>
+          <li>
+            Maintain checkpoints so it is easier to roll back to last checkpoint
+            rather than going back each transaction, which is time consuming.
+          </li>
+        </ul>
       </div>
     ),
   },
